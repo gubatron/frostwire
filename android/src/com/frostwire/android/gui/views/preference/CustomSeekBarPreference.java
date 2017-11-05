@@ -17,15 +17,19 @@
 
 package com.frostwire.android.gui.views.preference;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.DialogPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -193,10 +197,14 @@ public final class CustomSeekBarPreference extends DialogPreference {
             outState.putBoolean(UNLIMITED_CHECKED, mUnlimitedCheckbox.isChecked());
             outState.putInt(CURRENT_VALUE, mSeekbar.getProgress());
         }
-
+        @NonNull
         @Override
-        protected void onBindDialogView(View view) {
-            super.onBindDialogView(view);
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+            View view = layoutInflater.inflate(R.layout.dialog_preference_seekbar_with_checkbox, null);
+            builder.setView(view);
+
             mSeekbar = view.findViewById(R.id.dialog_preference_seekbar_with_checkbox_seekbar);
             mSeekbar.setMax(mEndRange);
 
@@ -222,6 +230,7 @@ public final class CustomSeekBarPreference extends DialogPreference {
                 public void onStopTrackingTouch(SeekBar seekBar) {
                 }
             });
+
             mCurrentValueTextView = view.findViewById(R.id.dialog_preference_seekbar_with_checkbox_current_value_textview);
             mUnlimitedCheckbox = view.findViewById(R.id.dialog_preference_seekbar_with_checkbox_unlimited_checkbox);
             Bundle arguments = getArguments();
@@ -238,6 +247,11 @@ public final class CustomSeekBarPreference extends DialogPreference {
             });
             updateComponents(previousValue);
             updateCurrentValueTextView(previousValue);
+
+            builder.setCancelable(true);
+            builder.setNegativeButton(R.string.cancel, (dialog, which) -> onDialogClosed(false));
+            builder.setPositiveButton(R.string.accept, (dialog, which) -> onDialogClosed(true));
+            return  builder.create();
         }
 
         private void updateComponents(int currentValue) {
