@@ -17,10 +17,10 @@
 
 package com.frostwire.android.gui.adapters.menu;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,7 +53,7 @@ public class CreateNewPlaylistMenuAction extends MenuAction {
     @Override
     public void onClick(Context context) {
         CreateNewPlaylistDialog.newInstance(fileDescriptors).
-                show(((Activity) getContext()).getFragmentManager());
+                show(((FragmentActivity) getContext()).getSupportFragmentManager());
     }
 
     public static class CreateNewPlaylistDialog extends AbstractDialog {

@@ -20,13 +20,13 @@ package com.frostwire.android.gui.views;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +48,7 @@ import java.util.List;
  * @author aldenml
  * @author marcelinkaaa
  */
-public abstract class AbstractDialog extends DialogFragment {
+public abstract class AbstractDialog extends android.support.v4.app.DialogFragment {
 
     protected static String getSuggestedTAG(Class clazz) {
         StringBuilder sb = new StringBuilder();

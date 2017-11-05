@@ -18,8 +18,8 @@
 
 package com.andrew.apollo.ui.fragments;
 
-import android.content.Loader;
 import android.os.Bundle;
+import android.support.v4.content.Loader;
 
 import com.andrew.apollo.adapters.AlbumAdapter;
 import com.andrew.apollo.loaders.AlbumLoader;

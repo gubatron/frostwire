@@ -17,16 +17,18 @@
 
 package com.frostwire.android.gui.views;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v14.preference.PreferenceFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceDialogFragmentCompat;
+import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.TwoStatePreference;
 import android.view.View;
 import android.view.Window;
@@ -38,7 +40,7 @@ import java.lang.reflect.Field;
  * @author gubatron
  * @author aldenml
  */
-public abstract class AbstractPreferenceFragment extends PreferenceFragment {
+public abstract class AbstractPreferenceFragment extends PreferenceFragmentCompat {
 
     protected static final String DIALOG_FRAGMENT_TAG =
             "android.support.v14.preference.PreferenceFragment.DIALOG";
@@ -96,8 +98,9 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
     }
 
     public static abstract class PreferenceDialogFragment
-            extends android.support.v14.preference.PreferenceDialogFragment {
+            extends PreferenceDialogFragmentCompat {
 
+        @SuppressLint("RestrictedApi")
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {

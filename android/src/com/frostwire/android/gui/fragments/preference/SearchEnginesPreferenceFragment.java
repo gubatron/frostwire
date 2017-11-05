@@ -17,6 +17,7 @@
 
 package com.frostwire.android.gui.fragments.preference;
 
+import android.annotation.SuppressLint;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceGroup;
@@ -162,6 +163,7 @@ public final class SearchEnginesPreferenceFragment extends AbstractPreferenceFra
         final int checkedDrawableId;
         final int unCheckedDrawableId;
 
+        @SuppressLint("RestrictedApi")
         CheckedAwarePreferenceGroupAdapter(PreferenceGroup preferenceGroup, int checkedDrawableId, int unCheckedDrawableId) {
             super(preferenceGroup);
             this.checkedDrawableId = checkedDrawableId;
@@ -170,7 +172,7 @@ public final class SearchEnginesPreferenceFragment extends AbstractPreferenceFra
 
         @Override
         public void onBindViewHolder(PreferenceViewHolder holder, int position) {
-            final CheckBoxPreference preference = (CheckBoxPreference) getItem(position);
+            @SuppressLint("RestrictedApi") final CheckBoxPreference preference = (CheckBoxPreference) getItem(position);
             preference.onBindViewHolder(holder);
             if (!preference.getKey().equals(PREF_KEY_SEARCH_SELECT_ALL)) {
                 int drawableId = preference.isChecked() ? checkedDrawableId : unCheckedDrawableId;

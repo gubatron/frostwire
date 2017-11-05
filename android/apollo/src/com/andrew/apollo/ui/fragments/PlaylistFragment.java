@@ -21,9 +21,9 @@ package com.andrew.apollo.ui.fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.Loader;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.content.Loader;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -44,7 +44,6 @@ import com.andrew.apollo.ui.fragments.profile.ApolloFragment;
 import com.andrew.apollo.utils.MusicUtils;
 import com.andrew.apollo.utils.PreferenceUtils;
 import com.frostwire.android.R;
-import com.frostwire.android.gui.adapters.menu.CreateNewPlaylistMenuAction;
 import com.frostwire.android.gui.views.AbstractActivity;
 import com.frostwire.android.gui.views.AbstractDialog;
 
@@ -126,7 +125,7 @@ public class PlaylistFragment extends ApolloFragment<PlaylistAdapter, Playlist> 
                 case FragmentMenuItems.DELETE:
                     PlaylistFragmentDeleteDialog playlistFragmentDeleteDialog =
                             PlaylistFragmentDeleteDialog.newInstance(mItem.mPlaylistName, mItem.mPlaylistId);
-                    playlistFragmentDeleteDialog.show(getActivity().getFragmentManager());
+                    playlistFragmentDeleteDialog.show(getActivity().getSupportFragmentManager());
                     return true;
                 default:
                     break;

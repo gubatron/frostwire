@@ -18,9 +18,9 @@
 
 package com.frostwire.android.gui.adapters;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Build;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.frostwire.android.R;

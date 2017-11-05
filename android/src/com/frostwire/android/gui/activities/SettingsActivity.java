@@ -18,13 +18,13 @@
 
 package com.frostwire.android.gui.activities;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.support.v14.preference.PreferenceFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
 
 import com.frostwire.android.R;
 import com.frostwire.android.StoragePicker;
@@ -37,7 +37,7 @@ import com.frostwire.android.gui.views.AbstractActivity;
  * @author grzesiekrzaca
  */
 public final class SettingsActivity extends AbstractActivity
-        implements PreferenceFragment.OnPreferenceStartFragmentCallback {
+        implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     /**
      * When starting this activity, the invoking Intent can contain this extra
@@ -89,7 +89,7 @@ public final class SettingsActivity extends AbstractActivity
     }
 
     @Override
-    public boolean onPreferenceStartFragment(PreferenceFragment caller, Preference pref) {
+    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
         startPreferencePanel(pref.getFragment(), pref.getExtras(), pref.getTitle(), null, 0);
         return true;
     }
@@ -125,7 +125,7 @@ public final class SettingsActivity extends AbstractActivity
 
     private void switchToFragment(String fragmentName, Bundle args, CharSequence title) {
         Fragment f = Fragment.instantiate(this, fragmentName, args);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transaction.replace(R.id.activity_settings_content, f, fragmentName);
         transaction.commitAllowingStateLoss();

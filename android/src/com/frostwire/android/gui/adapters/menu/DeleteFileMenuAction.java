@@ -19,10 +19,10 @@
 
 package com.frostwire.android.gui.adapters.menu;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -71,7 +71,7 @@ public final class DeleteFileMenuAction extends MenuAction {
     }
 
     private void showDeleteFilesDialog() {
-        DeleteFileMenuActionDialog.newInstance(this, onDialogClickListener).show(((Activity) getContext()).getFragmentManager());
+        DeleteFileMenuActionDialog.newInstance(this, onDialogClickListener).show(((FragmentActivity) getContext()).getSupportFragmentManager());
     }
 
     private void deleteFiles() {

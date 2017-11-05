@@ -17,10 +17,10 @@
 
 package com.frostwire.android.gui.adapters.menu;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -152,11 +152,11 @@ public class SeedAction extends MenuAction implements AbstractDialog.OnDialogCli
     }
 
     private void showNoWifiInformationDialog() {
-        ShowNoWifiInformationDialog.newInstance().show(((Activity) getContext()).getFragmentManager());
+        ShowNoWifiInformationDialog.newInstance().show(((FragmentActivity) getContext()).getSupportFragmentManager());
     }
 
     private void showMobileDataProtectionInformationDialog() {
-        ShowMobileDataProtectionInformationDialog.newInstance().show(((Activity) getContext()).getFragmentManager());
+        ShowMobileDataProtectionInformationDialog.newInstance().show(((FragmentActivity) getContext()).getSupportFragmentManager());
     }
 
     private void showBittorrentDisconnectedDialog() {
@@ -166,7 +166,7 @@ public class SeedAction extends MenuAction implements AbstractDialog.OnDialogCli
                 R.string.bittorrent_is_currently_disconnected_would_you_like_me_to_start_it_for_you,
                 YesNoDialog.FLAG_DISMISS_ON_OK_BEFORE_PERFORM_DIALOG_CLICK);
         dlg.setOnDialogClickListener(this);
-        dlg.show(((Activity) getContext()).getFragmentManager());
+        dlg.show(((FragmentActivity) getContext()).getSupportFragmentManager());
     }
 
     private void showSeedingDialog() {
@@ -176,7 +176,7 @@ public class SeedAction extends MenuAction implements AbstractDialog.OnDialogCli
                 R.string.seeding_is_currently_disabled_in_settings,
                 YesNoDialog.FLAG_DISMISS_ON_OK_BEFORE_PERFORM_DIALOG_CLICK);
         dlg.setOnDialogClickListener(this);
-        dlg.show(((Activity) getContext()).getFragmentManager());
+        dlg.show(((FragmentActivity) getContext()).getSupportFragmentManager());
     }
 
     @Override

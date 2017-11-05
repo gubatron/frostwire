@@ -34,7 +34,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -178,12 +177,9 @@ public final class PreviewPlayerActivity extends AbstractActivity implements
         artistName.setText(source);
 
         if (!audio) {
-            videoTexture.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    toggleFullScreen(videoTexture);
-                    return false;
-                }
+            videoTexture.setOnTouchListener((view, motionEvent) -> {
+                toggleFullScreen(videoTexture);
+                return false;
             });
         }
 
@@ -320,10 +316,10 @@ public final class PreviewPlayerActivity extends AbstractActivity implements
             if (fileSearchResult instanceof YouTubePackageSearchResult) {
                 releaseMediaPlayer();
                 YouTubeDownloadDialog ytDownloadDlg = YouTubeDownloadDialog.newInstance(this, (YouTubePackageSearchResult) fileSearchResult);
-                ytDownloadDlg.show(getFragmentManager());
+                ytDownloadDlg.show(getSupportFragmentManager());
             } else {
                 NewTransferDialog dlg = NewTransferDialog.newInstance(fileSearchResult, false);
-                dlg.show(getFragmentManager());
+                dlg.show(getSupportFragmentManager());
             }
         } else {
             finish();
@@ -609,7 +605,9 @@ public final class PreviewPlayerActivity extends AbstractActivity implements
     @Override
     public void onPrepared(MediaPlayer mp) {
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        am.requestAudioFocus(PreviewPlayerActivity.this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        if (am != null) {
+            am.requestAudioFocus(PreviewPlayerActivity.this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        }
 
         final ImageView img = findView(R.id.activity_preview_player_thumbnail);
         onVideoViewPrepared(img);

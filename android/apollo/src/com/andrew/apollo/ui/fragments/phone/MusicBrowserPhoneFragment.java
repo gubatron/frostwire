@@ -18,8 +18,8 @@
 
 package com.andrew.apollo.ui.fragments.phone;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -95,7 +95,7 @@ public final class MusicBrowserPhoneFragment extends Fragment {
         }
 
         // Initialize the ViewPager
-        mViewPager = (ViewPager) rootView.findViewById(R.id.fragment_home_phone_pager);
+        mViewPager = rootView.findViewById(R.id.fragment_home_phone_pager);
         // Attch the adapter
         mViewPager.setAdapter(mPagerAdapter);
         // Offscreen pager loading limit

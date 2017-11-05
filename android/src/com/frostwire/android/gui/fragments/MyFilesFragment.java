@@ -19,17 +19,19 @@
 package com.frostwire.android.gui.fragments;
 
 import android.app.Activity;
-import android.app.LoaderManager;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.AsyncTaskLoader;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Loader;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.SearchView;
@@ -41,7 +43,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Filter;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -53,7 +54,6 @@ import com.frostwire.android.R;
 import com.frostwire.android.core.ConfigurationManager;
 import com.frostwire.android.core.Constants;
 import com.frostwire.android.core.FileDescriptor;
-import com.frostwire.android.gui.Finger;
 import com.frostwire.android.gui.Peer;
 import com.frostwire.android.gui.adapters.menu.AddToPlaylistMenuAction;
 import com.frostwire.android.gui.adapters.menu.CopyMagnetMenuAction;
@@ -206,12 +206,9 @@ public class MyFilesFragment extends AbstractFragment implements LoaderCallbacks
 
     private void initToolbarCheckbox(Menu menu) {
         checkBoxMenuItem = menu.findItem(R.id.fragment_my_files_menu_checkbox);
-        checkBoxMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                onToolbarMenuSelectModeCheckboxClick();
-                return true;
-            }
+        checkBoxMenuItem.setOnMenuItemClickListener(item -> {
+            onToolbarMenuSelectModeCheckboxClick();
+            return true;
         });
         refreshCheckBoxMenuItemVisibility();
         selectAllCheckbox.setOnCheckedChangeListener(selectAllCheckboxListener);
@@ -277,9 +274,7 @@ public class MyFilesFragment extends AbstractFragment implements LoaderCallbacks
             final Set<FileListAdapter.FileDescriptorItem> checked = adapter.getChecked();
             if (checked != null && !checked.isEmpty()) {
                 Set<FileListAdapter.FileDescriptorItem> checkedCopy = new HashSet<>();
-                for (FileListAdapter.FileDescriptorItem fileDescriptorItem : checked) {
-                    checkedCopy.add(fileDescriptorItem);
-                }
+                checkedCopy.addAll(checked);
                 checkedItemsMap.put(adapter.getFileType(), checkedCopy);
             }
         }
@@ -322,24 +317,16 @@ public class MyFilesFragment extends AbstractFragment implements LoaderCallbacks
     protected void initComponents(View v, Bundle savedInstanceState) {
         findView(v, R.id.fragment_my_files_select_all_container).setVisibility(View.GONE);
         findView(v, R.id.progressContainer).setVisibility(View.GONE);
-        selectAllCheckboxListener = new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                onSelectAllChecked(isChecked);
-            }
-        };
+        selectAllCheckboxListener = (buttonView, isChecked) -> onSelectAllChecked(isChecked);
         selectAllCheckbox = findView(v, R.id.fragment_my_files_select_all_checkbox);
         selectAllCheckboxContainer = findView(v, R.id.fragment_my_files_select_all_container);
         swipeRefresh = findView(v, R.id.fragment_my_files_swipe_refresh);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                long now = SystemClock.elapsedRealtime();
-                if ((now - lastAdapterRefresh) > 5000) {
-                    refreshSelection();
-                } else {
-                    swipeRefresh.setRefreshing(false);
-                }
+        swipeRefresh.setOnRefreshListener(() -> {
+            long now = SystemClock.elapsedRealtime();
+            if ((now - lastAdapterRefresh) > 5000) {
+                refreshSelection();
+            } else {
+                swipeRefresh.setRefreshing(false);
             }
         });
         list = findView(v, R.id.fragment_my_files_gridview);
@@ -416,17 +403,8 @@ public class MyFilesFragment extends AbstractFragment implements LoaderCallbacks
     }
 
     private Loader<Object> createLoaderFiles(final byte fileType) {
-        AsyncTaskLoader<Object> loader = new AsyncTaskLoader<Object>(getActivity()) {
-            @Override
-            public Object loadInBackground() {
-                try {
-                    return new Object[]{fileType, peer.browse(fileType)};
-                } catch (Throwable e) {
-                    LOG.error("Error performing finger", e);
-                }
-                return null;
-            }
-        };
+        AsyncTaskLoader<Object> loader;
+        loader = new MyFilesAsyncTaskLoader(getActivity(), fileType, peer);
         try {
             loader.forceLoad();
         } catch (Throwable t) {
@@ -435,60 +413,76 @@ public class MyFilesFragment extends AbstractFragment implements LoaderCallbacks
         return loader;
     }
 
+    private static final class MyFilesAsyncTaskLoader extends AsyncTaskLoader<Object> {
+        private final byte fileType;
+        private final Peer peer;
+
+        public MyFilesAsyncTaskLoader(@NonNull Context context, byte fileType, Peer peer) {
+            super(context);
+            this.fileType = fileType;
+            this.peer = peer;
+        }
+
+        @Nullable
+        @Override
+        public Object loadInBackground() {
+            try {
+                return new Object[]{fileType, peer.browse(fileType)};
+            } catch (Throwable e) {
+                LOG.error("Error performing finger", e);
+            }
+            return null;
+        }
+    }
+
     private void updateHeader() {
         if (peer == null) {
             LOG.warn("Something wrong. peer is null");
             return;
         }
-        peer.finger(new Finger.FingerCallback() {
-            @Override
-            public void onFinger(final Finger finger) {
-                if (isAdded()) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (header != null) {
-                                byte fileType = adapter != null ? adapter.getFileType() : Constants.FILE_TYPE_AUDIO;
-                                int numTotal = 0;
-                                switch (fileType) {
-                                    case Constants.FILE_TYPE_TORRENTS:
-                                        numTotal = finger.numTotalTorrentFiles;
-                                        break;
-                                    case Constants.FILE_TYPE_AUDIO:
-                                        numTotal = finger.numTotalAudioFiles;
-                                        break;
-                                    case Constants.FILE_TYPE_DOCUMENTS:
-                                        numTotal = finger.numTotalDocumentFiles;
-                                        break;
-                                    case Constants.FILE_TYPE_PICTURES:
-                                        numTotal = finger.numTotalPictureFiles;
-                                        break;
-                                    case Constants.FILE_TYPE_RINGTONES:
-                                        numTotal = finger.numTotalRingtoneFiles;
-                                        break;
-                                    case Constants.FILE_TYPE_VIDEOS:
-                                        numTotal = finger.numTotalVideoFiles;
-                                        break;
-                                }
-                                
-                                if (isAdded()) {
-                                    String fileTypeStr = getString(R.string.my_filetype, UIUtils.getFileTypeAsString(getResources(), fileType));
-                                    TextView title = header.findViewById(R.id.view_my_files_header_text_title);
-                                    title.setText(fileTypeStr);
-                                }
-                                TextView total = header.findViewById(R.id.view_my_files_header_text_total);
-                                total.setText("(" + String.valueOf(numTotal) + ")");
-                            }
-
-                            if (adapter == null) {
-                                clickFileTypeTab(lastFileType);
-                            }
-                            refreshCheckBoxMenuItemVisibility();
-                            MusicUtils.stopSimplePlayer();
-                            restoreListViewScrollPosition();
+        peer.finger(finger -> {
+            if (isAdded()) {
+                getActivity().runOnUiThread(() -> {
+                    if (header != null) {
+                        byte fileType = adapter != null ? adapter.getFileType() : Constants.FILE_TYPE_AUDIO;
+                        int numTotal = 0;
+                        switch (fileType) {
+                            case Constants.FILE_TYPE_TORRENTS:
+                                numTotal = finger.numTotalTorrentFiles;
+                                break;
+                            case Constants.FILE_TYPE_AUDIO:
+                                numTotal = finger.numTotalAudioFiles;
+                                break;
+                            case Constants.FILE_TYPE_DOCUMENTS:
+                                numTotal = finger.numTotalDocumentFiles;
+                                break;
+                            case Constants.FILE_TYPE_PICTURES:
+                                numTotal = finger.numTotalPictureFiles;
+                                break;
+                            case Constants.FILE_TYPE_RINGTONES:
+                                numTotal = finger.numTotalRingtoneFiles;
+                                break;
+                            case Constants.FILE_TYPE_VIDEOS:
+                                numTotal = finger.numTotalVideoFiles;
+                                break;
                         }
-                    });
-                }
+
+                        if (isAdded()) {
+                            String fileTypeStr = getString(R.string.my_filetype, UIUtils.getFileTypeAsString(getResources(), fileType));
+                            TextView title = header.findViewById(R.id.view_my_files_header_text_title);
+                            title.setText(fileTypeStr);
+                        }
+                        TextView total = header.findViewById(R.id.view_my_files_header_text_total);
+                        total.setText("(" + String.valueOf(numTotal) + ")");
+                    }
+
+                    if (adapter == null) {
+                        clickFileTypeTab(lastFileType);
+                    }
+                    refreshCheckBoxMenuItemVisibility();
+                    MusicUtils.stopSimplePlayer();
+                    restoreListViewScrollPosition();
+                });
             }
         });
     }
@@ -642,12 +636,7 @@ public class MyFilesFragment extends AbstractFragment implements LoaderCallbacks
     private void performFilter(String filterString) {
         this.previousFilter = filterString;
         if (adapter != null && filterString != null) {
-            adapter.getFilter().filter(filterString, new Filter.FilterListener() {
-                @Override
-                public void onFilterComplete(int i) {
-                    updateAdapter();
-                }
-            });
+            adapter.getFilter().filter(filterString, i -> updateAdapter());
         }
     }
 
@@ -842,6 +831,9 @@ public class MyFilesFragment extends AbstractFragment implements LoaderCallbacks
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            if (action == null) {
+                return;
+            }
             if (context instanceof Activity) {
                 ((Activity) context).invalidateOptionsMenu();
             }

@@ -72,8 +72,6 @@ public abstract class AbstractTransferDetailFragment extends AbstractFragment {
 
     protected abstract void updateComponents();
 
-
-
     public String getTabTitle() {
         return tabTitle;
     }

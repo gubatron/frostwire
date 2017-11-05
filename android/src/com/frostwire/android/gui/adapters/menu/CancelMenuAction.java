@@ -17,10 +17,10 @@
 
 package com.frostwire.android.gui.adapters.menu;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -74,7 +74,7 @@ public final class CancelMenuAction extends MenuAction {
         CancelMenuActionDialog.newInstance(
                 transfer,
                 deleteData, deleteTorrent, this).
-                show(((Activity) getContext()).getFragmentManager());
+                show(((FragmentActivity) getContext()).getSupportFragmentManager());
     }
 
     public static class CancelMenuActionDialog extends AbstractDialog {

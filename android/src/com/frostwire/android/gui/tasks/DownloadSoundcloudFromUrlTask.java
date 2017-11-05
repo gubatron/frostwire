@@ -55,8 +55,7 @@ public final class DownloadSoundcloudFromUrlTask extends ContextTask<List<Soundc
         String text = ctx.getString(R.string.are_you_sure_you_want_to_download_the_following, whatToDownload, totalSize);
 
         //AbstractConfirmListDialog
-        ConfirmSoundcloudDownloadDialog dlg = ConfirmSoundcloudDownloadDialog.newInstance(ctx, title, text, results);
-        return dlg;
+        return ConfirmSoundcloudDownloadDialog.newInstance(ctx, title, text, results);
     }
 
     private long getTotalSize(List<SoundcloudSearchResult> results) {
@@ -72,7 +71,7 @@ public final class DownloadSoundcloudFromUrlTask extends ContextTask<List<Soundc
         if (ctx != null && !results.isEmpty()) {
             MainActivity activity = (MainActivity) ctx;
             ConfirmSoundcloudDownloadDialog dlg = createConfirmListDialog(ctx, results);
-            dlg.show(activity.getFragmentManager());
+            dlg.show(activity.getSupportFragmentManager());
         }
     }
 

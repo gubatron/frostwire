@@ -18,7 +18,6 @@
 package com.frostwire.android.gui.views;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
@@ -33,7 +32,7 @@ import com.frostwire.util.Logger;
  * @author gubatron
  * @author aldenml
  */
-public abstract class AbstractFragment extends Fragment {
+public abstract class AbstractFragment extends android.support.v4.app.Fragment {
     private static Logger LOG = Logger.getLogger(AbstractFragment.class);
     private final int layoutResId;
 

@@ -18,8 +18,8 @@
 
 package com.andrew.apollo.ui.fragments;
 
-import android.content.Loader;
 import android.os.Bundle;
+import android.support.v4.content.Loader;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;

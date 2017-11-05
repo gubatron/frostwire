@@ -18,11 +18,11 @@
 package com.andrew.apollo.ui.fragments.profile;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.LoaderManager;
 import android.content.Intent;
-import android.content.Loader;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -366,12 +366,9 @@ public abstract class ApolloFragment<T extends ApolloFragmentAdapter<I>, I>
             title = ((Artist) mItem).mArtistName;
         }
 
-        DeleteDialog.newInstance(title, songList, null).setOnDeleteCallback(new DeleteDialog.DeleteDialogCallback() {
-            @Override
-            public void onDelete(long[] id) {
-                restartLoader(true);
-                refresh();
-            }
+        DeleteDialog.newInstance(title, songList, null).setOnDeleteCallback(id -> {
+            restartLoader(true);
+            refresh();
         }).show(getFragmentManager(), "DeleteDialog");
         return true;
     }
@@ -437,11 +434,8 @@ public abstract class ApolloFragment<T extends ApolloFragmentAdapter<I>, I>
         outState.putAll(getArguments() != null ? getArguments() : new Bundle());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void onLoadFinished(final Loader<List<I>> loader, final List<I> data) {
+    public void onLoadFinished(Loader<List<I>> loader, List<I> data) {
         // Check for any errors
         if (data == null || data.isEmpty()) {
             mAdapter.unload();

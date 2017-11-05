@@ -19,9 +19,9 @@
 
 package com.frostwire.android.gui.dialogs;
 
-import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 
 import com.frostwire.android.gui.transfers.TorrentFetcherListener;
 import com.frostwire.jlibtorrent.TorrentInfo;
@@ -42,9 +42,9 @@ public class HandpickedTorrentDownloadDialogOnFetch implements TorrentFetcherLis
     private WeakReference<FragmentManager> fragmentManagerRef;
     private static Logger LOG = Logger.getLogger(HandpickedTorrentDownloadDialogOnFetch.class);
 
-    public HandpickedTorrentDownloadDialogOnFetch(Activity activity) {
-        contextRef = Ref.weak((Context) activity);
-        fragmentManagerRef = Ref.weak(activity.getFragmentManager());
+    public HandpickedTorrentDownloadDialogOnFetch(FragmentActivity activity) {
+        contextRef = Ref.weak(activity);
+        fragmentManagerRef = Ref.weak(activity.getSupportFragmentManager());
     }
 
     @Override

@@ -20,8 +20,8 @@ package com.andrew.apollo.menu;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -90,28 +90,21 @@ abstract class BasePlaylistDialog extends DialogFragment {
         noButton.setOnClickListener(new NegativeButtonOnClickListener(mPlaylistDialog));
         yesButton.setOnClickListener(new PositiveButtonOnClickListener(this, mPlaylistDialog));
 
-        mPlaylist.post(new Runnable() {
-
-            @Override
-            public void run() {
-                // Request focus to the edit text
-                mPlaylist.requestFocus();
-                // Select the playlist name
-                mPlaylist.selectAll();
-            }
+        mPlaylist.post(() -> {
+            // Request focus to the edit text
+            mPlaylist.requestFocus();
+            // Select the playlist name
+            mPlaylist.selectAll();
         });
 
         initObjects(savedInstanceState);
         mPlaylist.setText(mDefaultname);
         mPlaylist.setSelection(mDefaultname.length());
         mPlaylist.addTextChangedListener(mTextWatcher);
-        mPlaylist.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    mPlaylistDialog.getWindow().setSoftInputMode(
-                            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                }
+        mPlaylist.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                mPlaylistDialog.getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             }
         });
         mPlaylistDialog.show();
@@ -136,9 +129,11 @@ abstract class BasePlaylistDialog extends DialogFragment {
 
             // refresh the PlaylistFragment
             AbstractActivity act = (AbstractActivity) basePlaylistDialog.getActivity();
-            PlaylistFragment f = act.findFragment(PlaylistFragment.class);
-            if (f != null) {
-                f.refresh();
+            if (act != null) {
+                PlaylistFragment f = act.findFragment(PlaylistFragment.class);
+                if (f != null) {
+                    f.refresh();
+                }
             }
         }
     }

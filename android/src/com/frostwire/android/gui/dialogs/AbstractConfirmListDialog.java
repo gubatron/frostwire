@@ -19,11 +19,10 @@
 package com.frostwire.android.gui.dialogs;
 
 import android.app.Dialog;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -37,7 +36,6 @@ import com.frostwire.android.R;
 import com.frostwire.android.gui.views.AbstractDialog;
 import com.frostwire.android.gui.views.AbstractListAdapter;
 import com.frostwire.util.Logger;
-import com.frostwire.util.Ref;
 
 import java.util.Collections;
 import java.util.HashSet;

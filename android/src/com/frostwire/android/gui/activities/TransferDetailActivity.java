@@ -17,11 +17,9 @@
 
 package com.frostwire.android.gui.activities;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.SparseArray;
 
@@ -35,7 +33,6 @@ import com.frostwire.android.gui.fragments.TransferDetailTrackersFragment;
 import com.frostwire.android.gui.transfers.TransferManager;
 import com.frostwire.android.gui.transfers.UIBittorrentDownload;
 import com.frostwire.android.gui.views.AbstractActivity;
-import com.frostwire.android.gui.views.AbstractFragment;
 import com.frostwire.android.gui.views.AbstractTransferDetailFragment;
 import com.frostwire.android.gui.views.TimerObserver;
 import com.frostwire.android.gui.views.TimerService;
@@ -65,7 +62,7 @@ public class TransferDetailActivity extends AbstractActivity implements TimerObs
         }
         OnPageChangeListener onPageChangeListener = new OnPageChangeListener(this);
         SectionsPagerAdapter mSectionsPagerAdapter =
-                new SectionsPagerAdapter(getFragmentManager(), detailFragments);
+                new SectionsPagerAdapter(getSupportFragmentManager(), detailFragments);
         ViewPager viewPager = findViewById(R.id.transfer_detail_viewpager);
         if (viewPager != null) {
             viewPager.clearOnPageChangeListeners();
@@ -114,14 +111,58 @@ public class TransferDetailActivity extends AbstractActivity implements TimerObs
         if (tabTitles == null || tabTitles.size() <= 0) {
             throw new RuntimeException("check your logic: can't init fragments without initializing tab titles");
         }
-        // to change the order of the tabs, add/remove tabs, just maintain here.
-        detailFragments = new AbstractTransferDetailFragment[]{
-                new TransferDetailFilesFragment().init(this, tabTitles, uiBittorrentDownload),
-                new TransferDetailStatusFragment().init(this, tabTitles, uiBittorrentDownload),
-                new TransferDetailDetailsFragment().init(this, tabTitles, uiBittorrentDownload),
-                new TransferDetailTrackersFragment().init(this, tabTitles, uiBittorrentDownload),
-                new TransferDetailPeersFragment().init(this, tabTitles, uiBittorrentDownload),
-                new TransferDetailPiecesFragment().init(this, tabTitles, uiBittorrentDownload)};
+
+        // If you need to change the order of the tabs, just change this array
+        // the rest should be taken care of automatically
+        Class[] detailFragmentClasses = new Class[] {
+                TransferDetailFilesFragment.class,
+                TransferDetailStatusFragment.class,
+                TransferDetailDetailsFragment.class,
+                TransferDetailTrackersFragment.class,
+                TransferDetailPeersFragment.class,
+                TransferDetailPiecesFragment.class
+        };
+        detailFragments = new AbstractTransferDetailFragment[detailFragmentClasses.length];
+
+        // are we rotating? if so, we may just recover our pre-existing fragments and put them here.
+        List<Fragment> knownFragments = getFragments();
+        // we ask > 1 because [0] is always some framework tracked fragment
+        if (knownFragments != null && knownFragments.size() > 1) {
+            recoverExistingFragments(detailFragmentClasses);
+        } else {
+            // to change the order of the tabs, add/remove tabs, just maintain here.
+            int i = 0;
+            for (Class clazz : detailFragmentClasses) {
+                try {
+                    detailFragments[i++] = (AbstractTransferDetailFragment) clazz.newInstance();
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+            }
+        }
+
+        // make sure all fragments
+        for (AbstractTransferDetailFragment f : detailFragments) {
+            f.init(this, tabTitles, uiBittorrentDownload);
+        }
+    }
+
+    private void recoverExistingFragments(Class[] detailFragmentClasses) {
+        int i = 0;
+        for (Class fragmentClass : detailFragmentClasses) {
+            Fragment correspondingActiveFragment = getCorrespondingActiveFragment(fragmentClass);
+            if (correspondingActiveFragment != null && correspondingActiveFragment.isAdded()) {
+                detailFragments[i] = (AbstractTransferDetailFragment) correspondingActiveFragment;
+            } else {
+                try {
+                    // instantiate a new one
+                    detailFragments[i] = (AbstractTransferDetailFragment) fragmentClass.newInstance();
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+            }
+            i++;
+        }
     }
 
     @Override
@@ -162,11 +203,11 @@ public class TransferDetailActivity extends AbstractActivity implements TimerObs
             return;
         }
         if (!currentFragment.isAdded()) {
-            Fragment correspondingActiveFragment = getCorrespondingActiveFragment(currentFragment);
+            Fragment correspondingActiveFragment = getCorrespondingActiveFragment(currentFragment.getClass());
             if (correspondingActiveFragment == null) {
                 return; // definitively not added yet
             }
-            detailFragments[lastSelectedTabIndex]=(AbstractTransferDetailFragment) correspondingActiveFragment;
+            detailFragments[lastSelectedTabIndex] = (AbstractTransferDetailFragment) correspondingActiveFragment;
             currentFragment = detailFragments[lastSelectedTabIndex];
         }
         try {
@@ -181,18 +222,18 @@ public class TransferDetailActivity extends AbstractActivity implements TimerObs
      * it seems the SectionsPageAdapter doesn't properly tag the fragments
      * and we have to manually find the corresponding added fragment
      * in the list keep by AbstractFragment's getFragments()
-     *
+     * <p>
      * We receive a fragment whose .isAdded() method returns false and we
      * look into our tracked list of fragments for an equivalent instance that
      * is marked as added and return it.
-     *
+     * <p>
      * We'll then replace that instance in our detailFragments[] array
      */
-    private Fragment getCorrespondingActiveFragment(AbstractTransferDetailFragment currentFragment) {
+    private Fragment getCorrespondingActiveFragment(Class fragmentClass) {
         List<Fragment> fragments = getFragments();
         if (fragments.size() > 1) {
             for (Fragment f : fragments) {
-                if (f.isAdded() && currentFragment.getClass() == f.getClass()) {
+                if (f.isAdded() && fragmentClass == f.getClass()) {
                     return f;
                 }
             }
@@ -210,18 +251,18 @@ public class TransferDetailActivity extends AbstractActivity implements TimerObs
         outState.putInt("lastSelectedTabIndex", lastSelectedTabIndex);
     }
 
-    private static class SectionsPagerAdapter extends FragmentPagerAdapter {
+    private static class SectionsPagerAdapter extends android.support.v4.app.FragmentPagerAdapter {
 
-        private final AbstractTransferDetailFragment[] detailFragments;
+        private final android.support.v4.app.Fragment[] detailFragments;
 
-        SectionsPagerAdapter(FragmentManager fm,
-                             AbstractTransferDetailFragment[] detailFragments) {
-            super(fm);
+        public SectionsPagerAdapter(android.support.v4.app.FragmentManager supportFM,
+                                    android.support.v4.app.Fragment[] detailFragments) {
+            super(supportFM);
             this.detailFragments = detailFragments;
         }
 
         @Override
-        public AbstractFragment getItem(int position) {
+        public android.support.v4.app.Fragment getItem(int position) {
             return detailFragments[position];
         }
 
@@ -232,7 +273,7 @@ public class TransferDetailActivity extends AbstractActivity implements TimerObs
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return detailFragments[position].getTabTitle().toUpperCase();
+            return ((AbstractTransferDetailFragment)detailFragments[position]).getTabTitle().toUpperCase();
         }
     }
 

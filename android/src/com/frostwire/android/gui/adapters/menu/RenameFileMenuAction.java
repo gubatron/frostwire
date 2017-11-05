@@ -19,10 +19,10 @@
 
 package com.frostwire.android.gui.adapters.menu;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,7 +65,7 @@ public class RenameFileMenuAction extends MenuAction {
 
     private void showRenameFileDialog() {
         RenameFileMenuActionDialog.renameAction = this;
-        RenameFileMenuActionDialog.newInstance(getFilePath(), dialogClickListener).show(((Activity) getContext()).getFragmentManager());
+        RenameFileMenuActionDialog.newInstance(getFilePath(), dialogClickListener).show(((FragmentActivity) getContext()).getSupportFragmentManager());
     }
 
     private boolean isValidFileName(String newFileName) {

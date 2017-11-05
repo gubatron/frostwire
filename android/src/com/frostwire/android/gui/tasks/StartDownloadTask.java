@@ -20,6 +20,7 @@ package com.frostwire.android.gui.tasks;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 
 import com.frostwire.android.R;
 import com.frostwire.android.gui.dialogs.HandpickedTorrentDownloadDialogOnFetch;
@@ -69,10 +70,10 @@ public class StartDownloadTask extends ContextTask<Transfer> {
             if (sr instanceof TorrentSearchResult &&
                 !(sr instanceof TorrentCrawledSearchResult)) {
                 transfer = TransferManager.instance().downloadTorrent(((TorrentSearchResult) sr).getTorrentUrl(),
-                        new HandpickedTorrentDownloadDialogOnFetch((Activity) getContext()), sr.getDisplayName());
+                        new HandpickedTorrentDownloadDialogOnFetch((FragmentActivity) getContext()), sr.getDisplayName());
             } else if (sr instanceof YouTubePackageSearchResult) {
                 YouTubeDownloadDialog ytDownloadDlg = YouTubeDownloadDialog.newInstance(getContext(), (YouTubePackageSearchResult) sr);
-                ytDownloadDlg.show(((Activity) getContext()).getFragmentManager());
+                ytDownloadDlg.show(((FragmentActivity) getContext()).getSupportFragmentManager());
             }
             else {
                 transfer = TransferManager.instance().download(sr);

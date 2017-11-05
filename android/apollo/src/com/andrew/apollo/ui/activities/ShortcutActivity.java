@@ -18,17 +18,17 @@
 
 package com.andrew.apollo.ui.activities;
 
-import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.Loader;
 
 import com.andrew.apollo.Config;
 import com.andrew.apollo.IApolloService;
@@ -55,7 +55,7 @@ import static com.andrew.apollo.utils.MusicUtils.musicPlaybackService;
  *
  * @author Andrew Neal (andrewdneal@gmail.com)
  */
-public final class ShortcutActivity extends Activity implements ServiceConnection {
+public final class ShortcutActivity extends FragmentActivity implements ServiceConnection {
 
     /**
      * If true, this class will begin playback and open
@@ -117,7 +117,7 @@ public final class ShortcutActivity extends Activity implements ServiceConnectio
 
         // Check for a voice query
         if (mIntent != null && Config.PLAY_FROM_SEARCH.equals(mIntent.getAction())) {
-            getLoaderManager().initLoader(0, null, mSongAlbumArtistQuery);
+            getSupportLoaderManager().initLoader(0, null, mSongAlbumArtistQuery);
         } else if (musicPlaybackService != null) {
             AsyncHandler.post(new Runnable() {
                 @Override

@@ -17,14 +17,14 @@
 
 package com.frostwire.android.gui.views;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
@@ -100,8 +100,7 @@ public abstract class AbstractActivity extends AppCompatActivity {
      */
     public final List<Fragment> getFragments() {
         List<Fragment> result = new LinkedList<>();
-
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         for (String tag : fragmentTags) {
             Fragment f = fm.findFragmentByTag(tag);
             if (f != null) {
@@ -193,8 +192,8 @@ public abstract class AbstractActivity extends AppCompatActivity {
     }
 
     @SuppressWarnings("unchecked")
-    protected final <T extends Fragment> T findFragment(@IdRes int id) {
-        return (T) getFragmentManager().findFragmentById(id);
+    protected final <T extends android.support.v4.app.Fragment> T findFragment(@IdRes int id) {
+        return (T) getSupportFragmentManager().findFragmentById(id);
     }
 
     /**

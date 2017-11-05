@@ -17,7 +17,7 @@
 
 package com.frostwire.android.gui.activities.internal;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 
 import com.frostwire.android.R;

@@ -19,11 +19,10 @@
 
 package com.frostwire.android.gui.adapters.menu;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
+import android.support.v4.app.FragmentActivity;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -54,7 +53,7 @@ public final class FileInformationAction extends MenuAction {
 
     @Override
     public void onClick(Context context) {
-        FileInformationDialog.newInstance(fd).show(((Activity) getContext()).getFragmentManager());
+        FileInformationDialog.newInstance(fd).show(((FragmentActivity) getContext()).getSupportFragmentManager());
     }
 
     public static class FileInformationDialog extends AbstractDialog {
@@ -97,12 +96,7 @@ public final class FileInformationAction extends MenuAction {
             fileStoragePathTextView = findView(dlg, R.id.dialog_file_information_storage_path);
             updateFileMetadata(fileDescriptor);
             Button buttonOk = findView(dlg, R.id.dialog_file_information_button_ok);
-            buttonOk.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onOkButtonClick();
-                }
-            });
+            buttonOk.setOnClickListener(v -> onOkButtonClick());
         }
 
         private void updateFileMetadata(FileDescriptor fd) {

@@ -21,8 +21,6 @@ package com.frostwire.android.gui.activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -37,6 +35,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
@@ -160,7 +161,7 @@ public class MainActivity extends AbstractActivity implements
             try {
                 fragmentsStack.pop();
                 int id = fragmentsStack.peek();
-                Fragment fragment = getFragmentManager().findFragmentById(id);
+                Fragment fragment = getSupportFragmentManager().findFragmentById(id);
                 switchContent(fragment, false);
             } catch (Throwable e) {
                 // don't break the app
@@ -608,7 +609,7 @@ public class MainActivity extends AbstractActivity implements
     private void saveLastFragment(Bundle outState) {
         Fragment fragment = getCurrentFragment();
         if (fragment != null) {
-            getFragmentManager().putFragment(outState, CURRENT_FRAGMENT_KEY, fragment);
+            getSupportFragmentManager().putFragment(outState, CURRENT_FRAGMENT_KEY, fragment);
         }
     }
 
@@ -642,7 +643,7 @@ public class MainActivity extends AbstractActivity implements
             if (!Platforms.fileSystem().canWrite(parent) &&
                     !SDPermissionDialog.visible) {
                 SDPermissionDialog dlg = SDPermissionDialog.newInstance();
-                dlg.show(getFragmentManager());
+                dlg.show(getSupportFragmentManager());
             }
         } catch (Throwable e) {
             // we can't do anything about this
@@ -697,7 +698,7 @@ public class MainActivity extends AbstractActivity implements
                 R.string.minimize_frostwire,
                 R.string.are_you_sure_you_wanna_leave,
                 YesNoDialog.FLAG_DISMISS_ON_OK_BEFORE_PERFORM_DIALOG_CLICK);
-        dlg.show(getFragmentManager()); //see onDialogClick
+        dlg.show(getSupportFragmentManager()); //see onDialogClick
     }
 
     public void showShutdownDialog() {
@@ -707,7 +708,7 @@ public class MainActivity extends AbstractActivity implements
                 R.string.app_shutdown_dlg_title,
                 R.string.app_shutdown_dlg_message,
                 YesNoDialog.FLAG_DISMISS_ON_OK_BEFORE_PERFORM_DIALOG_CLICK);
-        dlg.show(getFragmentManager()); //see onDialogClick
+        dlg.show(getSupportFragmentManager()); //see onDialogClick
     }
 
     public void onDialogClick(String tag, int which) {
@@ -746,10 +747,11 @@ public class MainActivity extends AbstractActivity implements
     }
 
     private void setupFragments() {
-        search = (SearchFragment) getFragmentManager().findFragmentById(R.id.activity_main_fragment_search);
-        search.connectDrawerLayoutFilterView((DrawerLayout) findView(R.id.activity_main_drawer_layout), findView(R.id.activity_main_keyword_filter_drawer_view));
-        library = (MyFilesFragment) getFragmentManager().findFragmentById(R.id.activity_main_fragment_my_files);
-        transfers = (TransfersFragment) getFragmentManager().findFragmentById(R.id.activity_main_fragment_transfers);
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        search = (SearchFragment) supportFragmentManager.findFragmentById(R.id.activity_main_fragment_search);
+        search.connectDrawerLayoutFilterView(findView(R.id.activity_main_drawer_layout), findView(R.id.activity_main_keyword_filter_drawer_view));
+        library = (MyFilesFragment) supportFragmentManager.findFragmentById(R.id.activity_main_fragment_my_files);
+        transfers = (TransfersFragment) supportFragmentManager.findFragmentById(R.id.activity_main_fragment_transfers);
     }
 
     private void hideFragments() {
@@ -758,7 +760,7 @@ public class MainActivity extends AbstractActivity implements
         } catch (Throwable t) {
             LOG.warn(t.getMessage(), t);
         }
-        FragmentTransaction tx = getFragmentManager().beginTransaction();
+        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
         tx.hide(search).hide(library).hide(transfers);
         try {
             tx.commit();
@@ -780,7 +782,7 @@ public class MainActivity extends AbstractActivity implements
     private void setupInitialFragment(Bundle savedInstanceState) {
         Fragment fragment = null;
         if (savedInstanceState != null) {
-            fragment = getFragmentManager().getFragment(savedInstanceState, CURRENT_FRAGMENT_KEY);
+            fragment = getSupportFragmentManager().getFragment(savedInstanceState, CURRENT_FRAGMENT_KEY);
             restoreFragmentsStack(savedInstanceState);
         }
         if (fragment == null) {
@@ -840,7 +842,7 @@ public class MainActivity extends AbstractActivity implements
 
     private void switchContent(Fragment fragment, boolean addToStack) {
         hideFragments();
-        getFragmentManager().beginTransaction().show(fragment).commitAllowingStateLoss();
+        getSupportFragmentManager().beginTransaction().show(fragment).commitAllowingStateLoss();
         if (addToStack && (fragmentsStack.isEmpty() || fragmentsStack.peek() != fragment.getId())) {
             fragmentsStack.push(fragment.getId());
         }
