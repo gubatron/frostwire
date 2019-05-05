@@ -95,6 +95,12 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         multiDexEnabled true
+
+        externalNativeBuild {
+            ndkBuild {
+	        arguments "NDK_MODULE_PATH=jni"
+	    }
+        }
     }
 
     compileOptions {
