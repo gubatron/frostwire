@@ -56,8 +56,4 @@ public final class DesktopPlatform extends AbstractPlatform {
             }
         }
     }
-
-    private DesktopSettings settings() {
-        return (DesktopSettings) super.settings();
-    }
 }
