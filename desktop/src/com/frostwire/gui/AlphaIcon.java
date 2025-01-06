@@ -19,6 +19,7 @@ import java.awt.*;
 public class AlphaIcon implements Icon {
     private final Icon icon;
     private final float alpha;
+    private final String lookAndFeelClassName;
 
     /**
      * Creates an <CODE>AlphaIcon</CODE> with the specified icon and opacity.
@@ -27,10 +28,13 @@ public class AlphaIcon implements Icon {
      *
      * @param icon the Icon to wrap
      * @param alpha the opacity
+     * @param lookAndFeelClassName the custom look and feel class name
      */
-    public AlphaIcon(Icon icon, float alpha) {
+    public AlphaIcon(Icon icon, float alpha, String lookAndFeelClassName) {
         this.icon = icon;
         this.alpha = alpha;
+        this.lookAndFeelClassName = lookAndFeelClassName;
+        applyLookAndFeel();
     }
 
     /**
@@ -69,5 +73,18 @@ public class AlphaIcon implements Icon {
     @Override
     public int getIconHeight() {
         return icon.getIconHeight();
+    }
+
+    /**
+     * Applies the custom look and feel class name.
+     */
+    private void applyLookAndFeel() {
+        if (lookAndFeelClassName != null && !lookAndFeelClassName.isEmpty()) {
+            try {
+                UIManager.setLookAndFeel(lookAndFeelClassName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

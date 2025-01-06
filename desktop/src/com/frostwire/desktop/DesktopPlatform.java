@@ -33,6 +33,7 @@ public final class DesktopPlatform extends AbstractPlatform {
     public DesktopPlatform() {
         super(new DefaultFileSystem(), new DesktopPaths(), new DesktopSettings());
         this.vpn = new DesktopVPNMonitor();
+        setLookAndFeel();
     }
 
     @Override
@@ -43,5 +44,16 @@ public final class DesktopPlatform extends AbstractPlatform {
     @Override
     public boolean isUIThread() {
         return SwingUtilities.isEventDispatchThread();
+    }
+
+    private void setLookAndFeel() {
+        String lookAndFeelClassName = ((DesktopSettings) settings()).getLookAndFeelClassName();
+        if (lookAndFeelClassName != null && !lookAndFeelClassName.isEmpty()) {
+            try {
+                UIManager.setLookAndFeel(lookAndFeelClassName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

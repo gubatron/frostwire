@@ -25,6 +25,8 @@ import com.frostwire.platform.AppSettings;
  * @author aldenml
  */
 final class DesktopSettings implements AppSettings {
+    private static final String LOOK_AND_FEEL_CLASS_NAME_KEY = "lookAndFeelClassName";
+
     @Override
     public String string(String key) {
         return null;
@@ -59,5 +61,13 @@ final class DesktopSettings implements AppSettings {
 
     @Override
     public void bool(String key, boolean value) {
+    }
+
+    public String getLookAndFeelClassName() {
+        return string(LOOK_AND_FEEL_CLASS_NAME_KEY);
+    }
+
+    public void setLookAndFeelClassName(String className) {
+        string(LOOK_AND_FEEL_CLASS_NAME_KEY, className);
     }
 }
