@@ -54,11 +54,11 @@ public final class SearchResultActionsRenderer extends FWAbstractJPanelTableCell
 
     static {
         play_solid = GUIMediator.getThemeImage("search_result_play_over");
-        play_transparent = new AlphaIcon(play_solid, BUTTONS_TRANSPARENCY);
+        play_transparent = new AlphaIcon(play_solid, BUTTONS_TRANSPARENCY, null);
         download_solid = GUIMediator.getThemeImage("search_result_download_over");
-        download_transparent = new AlphaIcon(download_solid, BUTTONS_TRANSPARENCY);
+        download_transparent = new AlphaIcon(download_solid, BUTTONS_TRANSPARENCY, null);
         details_solid = GUIMediator.getThemeImage("search_result_details_over");
-        details_transparent = new AlphaIcon(details_solid, BUTTONS_TRANSPARENCY);
+        details_transparent = new AlphaIcon(details_solid, BUTTONS_TRANSPARENCY, null);
         speaker_icon = GUIMediator.getThemeImage("speaker");
     }
 

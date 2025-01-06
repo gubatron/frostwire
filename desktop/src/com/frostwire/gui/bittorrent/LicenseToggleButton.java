@@ -44,7 +44,7 @@ public class LicenseToggleButton extends JPanel {
         setMeUp();
         licenseIcon = iconName;
         selectedIcon = getIcon(iconName);
-        unselectedIcon = new AlphaIcon(selectedIcon, 0.2f);
+        unselectedIcon = new AlphaIcon(selectedIcon, 0.2f, null);
         iconLabel = new JLabel((selected) ? selectedIcon : unselectedIcon);
         title = text;
         titleLabel = new JLabel("<html><b>" + text + "</b></html>");

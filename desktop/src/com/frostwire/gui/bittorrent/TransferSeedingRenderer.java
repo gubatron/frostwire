@@ -40,7 +40,7 @@ public final class TransferSeedingRenderer extends FWAbstractJPanelTableCellRend
 
     static {
         seed_solid = GUIMediator.getThemeImage("transfers_seeding_over");
-        seed_faded = new AlphaIcon(seed_solid, 0.5f);
+        seed_faded = new AlphaIcon(seed_solid, 0.5f, null);
         loading = GUIMediator.getThemeImage("indeterminate_small_progress");
     }
 

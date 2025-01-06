@@ -43,9 +43,9 @@ public abstract class AbstractActionsRenderer extends FWAbstractJPanelTableCellR
 
     static {
         play_solid = GUIMediator.getThemeImage("search_result_play_over");
-        play_transparent = new AlphaIcon(play_solid, BUTTONS_TRANSPARENCY);
+        play_transparent = new AlphaIcon(play_solid, BUTTONS_TRANSPARENCY, null);
         download_solid = GUIMediator.getThemeImage("search_result_download_over");
-        download_transparent = new AlphaIcon(download_solid, BUTTONS_TRANSPARENCY);
+        download_transparent = new AlphaIcon(download_solid, BUTTONS_TRANSPARENCY, null);
         share_solid = GUIMediator.getThemeImage("transfers_sharing_over");
     }
 

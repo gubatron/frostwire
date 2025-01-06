@@ -42,9 +42,9 @@ public class TransferDetailFilesActionsRenderer extends FWAbstractJPanelTableCel
 
     static {
         play_solid = GUIMediator.getThemeImage("search_result_play_over");
-        play_transparent = new AlphaIcon(play_solid, 0.1f);
+        play_transparent = new AlphaIcon(play_solid, 0.1f, null);
         share_solid = GUIMediator.getThemeImage("transfers_sharing_over");
-        share_faded = new AlphaIcon(share_solid, 0.1f);
+        share_faded = new AlphaIcon(share_solid, 0.1f, null);
     }
 
     private final JLabel playButton;

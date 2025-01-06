@@ -44,9 +44,9 @@ public class TableActionLabel extends JLabel {
 
     public TableActionLabel(ImageIcon enabledSolidIcon, ImageIcon disabledSolidIcon) {
         enabledSolid = enabledSolidIcon;
-        enabledTransparent = new AlphaIcon(enabledSolid, BUTTONS_TRANSPARENCY);
+        enabledTransparent = new AlphaIcon(enabledSolid, BUTTONS_TRANSPARENCY, null);
         disabledSolid = disabledSolidIcon;
-        disabledTransparent = new AlphaIcon(disabledSolid, BUTTONS_TRANSPARENCY);
+        disabledTransparent = new AlphaIcon(disabledSolid, BUTTONS_TRANSPARENCY, null);
     }
 
     public void updateActionIcon(boolean enableAction, boolean showSolid) {
